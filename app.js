@@ -75,7 +75,10 @@ app.get("/", async (req, res) => {
     );
     res.render("index", { students });
   } catch (error) {
-    res.status(500).send("Failed to load students");
+    res.status(200).render("index", {
+      students: [],
+      dbError: "Database is not reachable right now.",
+    });
   }
 });
 
