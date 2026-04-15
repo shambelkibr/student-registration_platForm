@@ -1,12 +1,12 @@
 # Student Registration Platform
 
-A simple **Express + EJS + MySQL** student registration system for performing CRUD operations (Create, Read, Update, Delete).
+A simple **Express + EJS + PostgreSQL** student registration system for performing CRUD operations (Create, Read, Update, Delete).
 
 ---
 
 ## Project Info
 
-This project is a full-stack web application built for managing student records using a local MySQL database.
+This project is a full-stack web application built for managing student records using a local PostgreSQL database.
 
 ---
 
@@ -25,14 +25,14 @@ This project is a full-stack web application built for managing student records 
 - Node.js
 - Express.js
 - EJS (Template Engine)
-- MySQL (MariaDB via XAMPP)
+- PostgreSQL
 - HTML, CSS, JavaScript
 
 ---
 
 ## Project Structure
 
-- app.js → Main Express app, routes, and MySQL connection
+- app.js → Main Express app, routes, and PostgreSQL connection
 - api/index.js → Vercel serverless entrypoint
 - vercel.json → Vercel routing config
 - package.json → Dependencies and scripts
@@ -60,7 +60,7 @@ npm install
 Run:
 
 ```bash
-mysql -u root -p < sql/schema.sql
+psql -U postgres -d student_registration -f sql/schema.sql
 ```
 
 OR manually:
@@ -77,9 +77,9 @@ USE student_registration;
 ```env
 PORT=3000
 DB_HOST=127.0.0.1
-DB_PORT=3306
+DB_PORT=5432
 DB_USER=shanbelkibre
-DB_PASSWORD=mysql_password
+DB_PASSWORD=postgres_password
 DB_NAME=student_registration
 ```
 
@@ -105,11 +105,11 @@ http://localhost:3000
 
 ### students
 
-- id INT AUTO_INCREMENT PRIMARY KEY
+- id BIGSERIAL PRIMARY KEY
 - name VARCHAR(100)
 - age INT
 - course VARCHAR(100)
-- created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+- created_at TIMESTAMPTZ DEFAULT NOW()
 
 ---
 
@@ -125,7 +125,7 @@ npm start     # start production server
 
 ## Notes
 
-- Make sure MySQL is running before starting the project
+- Make sure PostgreSQL is running before starting the project
 - Do NOT upload .env file to GitHub
 - Ensure correct DB credentials in .env
 
@@ -133,7 +133,7 @@ npm start     # start production server
 
 ## Deployment Info
 
-This project now includes a Vercel serverless entrypoint, but it still needs a hosted MySQL database.
+This project now includes a Vercel serverless entrypoint, but it still needs a hosted PostgreSQL database.
 
 ### Vercel deployment steps
 
@@ -157,7 +157,7 @@ This project now includes a Vercel serverless entrypoint, but it still needs a h
 - DB_PASSWORD
 - DB_NAME
 
-5. Make sure the database values point to a hosted MySQL server.
+5. Make sure the database values point to a hosted PostgreSQL server.
 
 Recommended deployment platforms:
 
@@ -166,7 +166,7 @@ Recommended deployment platforms:
 - Fly.io
 - Cyclic
 
-Vercel needs a hosted MySQL database, not local MySQL.
+Vercel needs a hosted PostgreSQL database, not local PostgreSQL.
 
 ---
 
