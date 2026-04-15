@@ -60,11 +60,11 @@
         <td><%= student.age %></td>
         <td><%= student.course %></td>
         <td>
-          <a href="/edit/<%= student._id %>" class="btn btn-sm btn-warning"
+          <a href="/edit/<%= student.id %>" class="btn btn-sm btn-warning"
             >Edit</a
           >
           <a
-            href="/delete/<%= student._id %>"
+            href="/delete/<%= student.id %>"
             class="btn btn-sm btn-danger"
             onclick="return confirm('Delete this student?')"
             >Delete</a
