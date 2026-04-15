@@ -5,6 +5,8 @@ const { Client } = require("pg");
 
 dotenv.config();
 
+const shouldUseSSL = String(process.env.DB_SSL || "").toLowerCase() === "true";
+
 async function main() {
   const client = new Client({
     host: process.env.DB_HOST || "127.0.0.1",
@@ -12,6 +14,7 @@ async function main() {
     user: process.env.DB_USER || "postgres",
     password: process.env.DB_PASSWORD || "",
     database: process.env.DB_NAME || "student_registration",
+    ...(shouldUseSSL ? { ssl: { rejectUnauthorized: false } } : {}),
   });
 
   const schemaPath = path.join(__dirname, "..", "sql", "schema.sql");

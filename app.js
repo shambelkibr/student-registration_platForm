@@ -18,6 +18,8 @@ const dbConfig = {
   port: Number(process.env.DB_PORT || 5432),
 };
 
+const shouldUseSSL = String(process.env.DB_SSL || "").toLowerCase() === "true";
+
 let pool;
 let dbInitPromise;
 
@@ -27,6 +29,7 @@ async function connectDB() {
       try {
         pool = new Pool({
           ...dbConfig,
+          ...(shouldUseSSL ? { ssl: { rejectUnauthorized: false } } : {}),
         });
 
         await pool.query(`
