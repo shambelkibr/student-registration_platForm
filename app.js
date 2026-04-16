@@ -6,6 +6,7 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
@@ -56,13 +57,30 @@ async function connectDB() {
 app.post("/add-student", async (req, res) => {
   try {
     await connectDB();
-    const { name, age, course } = req.body;
+
+    const name = String(req.body?.name ?? "").trim();
+    const course = String(req.body?.course ?? "").trim();
+    const age = Number(req.body?.age);
+
+    if (!name || !course || !Number.isInteger(age) || age <= 0) {
+      return res.status(400).send("Invalid student data");
+    }
+
     await pool.query(
       "INSERT INTO students (name, age, course) VALUES ($1, $2, $3)",
-      [name, Number(age), course],
+      [name, age, course],
     );
+
+    if (
+      req.is("application/json") ||
+      req.get("accept")?.includes("application/json")
+    ) {
+      return res.status(201).json({ ok: true });
+    }
+
     res.redirect("/?msg=added");
   } catch (error) {
+    console.error("Add student failed:", error.message);
     res.status(500).send("Failed to add student");
   }
 });
@@ -116,14 +134,35 @@ app.get("/edit/:id", async (req, res) => {
 app.post("/update/:id", async (req, res) => {
   try {
     await connectDB();
+
     const id = Number(req.params.id);
-    const { name, age, course } = req.body;
+    const name = String(req.body?.name ?? "").trim();
+    const course = String(req.body?.course ?? "").trim();
+    const age = Number(req.body?.age);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).send("Invalid student id");
+    }
+
+    if (!name || !course || !Number.isInteger(age) || age <= 0) {
+      return res.status(400).send("Invalid student data");
+    }
+
     await pool.query(
       "UPDATE students SET name = $1, age = $2, course = $3 WHERE id = $4",
-      [name, Number(age), course, id],
+      [name, age, course, id],
     );
+
+    if (
+      req.is("application/json") ||
+      req.get("accept")?.includes("application/json")
+    ) {
+      return res.status(200).json({ ok: true });
+    }
+
     res.redirect("/?msg=updated");
   } catch (error) {
+    console.error("Update student failed:", error.message);
     res.status(500).send("Failed to update student");
   }
 });
